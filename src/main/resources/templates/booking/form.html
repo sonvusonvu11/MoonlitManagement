@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{layout/base :: head('Đặt phòng')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container my-5" style="max-width: 720px;">
+    <h2 class="mb-4">
+        <i class="bi bi-calendar-plus"></i> Đặt phòng
+    </h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5>
+                Phòng #<span th:text="${room.roomNumber}">101</span>
+                <span class="badge bg-secondary" th:text="${room.typeName}">Standard</span>
+            </h5>
+            <p class="text-muted" th:text="${room.typeDescription}"></p>
+            <p class="price-tag">$<span th:text="${room.pricePerNight}">100</span>/đêm</p>
+
+            <hr/>
+
+            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                <ul class="mb-0">
+                    <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <form th:action="@{/booking/create}" th:object="${bookingRequest}" method="post">
+                <input type="hidden" th:field="*{roomNumber}"/>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ngày nhận phòng</label>
+                        <input type="date" th:field="*{checkinDate}" class="form-control"
+                               th:classappend="${#fields.hasErrors('checkinDate')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:errors="*{checkinDate}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ngày trả phòng</label>
+                        <input type="date" th:field="*{checkoutDate}" class="form-control"
+                               th:classappend="${#fields.hasErrors('checkoutDate')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:errors="*{checkoutDate}"></div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Tổng chi phí sẽ được tính theo: <b>(số đêm) × <span th:text="${room.pricePerNight}">100</span>$</b>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/rooms}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Huỷ
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Xác nhận đặt phòng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

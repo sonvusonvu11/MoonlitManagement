@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{layout/base :: head('Dashboard')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Bảng điều khiển</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-bg-primary shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6>Tổng số đơn</h6>
+                            <h2 th:text="${totalBookings}">0</h2>
+                        </div>
+                        <i class="bi bi-calendar-check display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-success shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6>Số phòng</h6>
+                            <h2 th:text="${totalRooms}">0</h2>
+                        </div>
+                        <i class="bi bi-door-open display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-warning shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6>Khách hàng</h6>
+                            <h2 th:text="${totalGuests}">0</h2>
+                        </div>
+                        <i class="bi bi-people display-4 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <b>Đơn đặt gần đây</b>
+            <a th:href="@{/dashboard/bookings}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Khách</th>
+                    <th>Phòng</th>
+                    <th>Loại</th>
+                    <th>Nhận</th>
+                    <th>Trả</th>
+                    <th>Số đêm</th>
+                    <th>Tổng tiền</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${recentBookings}">
+                    <td th:text="${b.bookingID}"></td>
+                    <td th:text="${b.guestName}"></td>
+                    <td th:text="${b.roomNumber}"></td>
+                    <td th:text="${b.roomTypeName}"></td>
+                    <td th:text="${#temporals.format(b.checkinDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#temporals.format(b.checkoutDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${b.nights}"></td>
+                    <td>$<span th:text="${b.totalPrice}"></span></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(recentBookings)}">
+                    <td colspan="8" class="text-center text-muted">Chưa có đơn nào</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/dashboard/rooms}" class="card text-decoration-none text-dark shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-door-closed display-4 text-primary"></i>
+                    <h5 class="mt-2">Quản lý phòng</h5>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a th:href="@{/dashboard/bookings}" class="card text-decoration-none text-dark shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-card-list display-4 text-success"></i>
+                    <h5 class="mt-2">Quản lý đơn đặt</h5>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a th:href="@{/dashboard/guests}" class="card text-decoration-none text-dark shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill display-4 text-warning"></i>
+                    <h5 class="mt-2">Quản lý khách</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

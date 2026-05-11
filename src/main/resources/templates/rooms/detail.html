@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{layout/base :: head('Chi tiết phòng')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container my-5">
+    <a th:href="@{/rooms}" class="btn btn-link mb-3">
+        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div style="height: 100%; min-height: 300px;
+                            background: linear-gradient(45deg, #6610f2, #0d6efd);
+                            display: flex; align-items: center; justify-content: center;
+                            color: white; font-size: 6rem;
+                            border-radius: .375rem 0 0 .375rem;">
+                    <i class="bi bi-house-door-fill"></i>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body p-4">
+                    <h2>Phòng #<span th:text="${room.roomNumber}">101</span></h2>
+                    <span class="badge"
+                          th:classappend="'badge-status-' + ${room.status}"
+                          th:text="${room.status}">AVAILABLE</span>
+
+                    <table class="table mt-3">
+                        <tr>
+                            <th>Loại phòng:</th>
+                            <td th:text="${room.typeName}">Standard</td>
+                        </tr>
+                        <tr>
+                            <th>Mô tả:</th>
+                            <td th:text="${room.typeDescription}">Mô tả</td>
+                        </tr>
+                        <tr>
+                            <th>Sức chứa:</th>
+                            <td><span th:text="${room.capacity}">2</span> khách</td>
+                        </tr>
+                        <tr>
+                            <th>Khách sạn:</th>
+                            <td th:text="${room.hotelName}">Moonlit</td>
+                        </tr>
+                        <tr>
+                            <th>Giá:</th>
+                            <td><span class="price-tag">$<span th:text="${room.pricePerNight}">100</span>/đêm</span></td>
+                        </tr>
+                    </table>
+
+                    <a sec:authorize="isAuthenticated()"
+                       th:href="@{|/booking/new?roomNumber=${room.roomNumber}|}"
+                       class="btn btn-primary btn-lg">
+                        <i class="bi bi-calendar-plus"></i> Đặt phòng
+                    </a>
+                    <a sec:authorize="!isAuthenticated()"
+                       th:href="@{/auth/login}"
+                       class="btn btn-primary btn-lg">
+                        Đăng nhập để đặt
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

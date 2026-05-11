@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} ?: 'Moonlit Hotel'">Moonlit Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+    <style>
+        :root { --brand: #0d6efd; --brand-dark: #0a58ca; }
+        body { background: #f7f8fb; font-family: 'Segoe UI', sans-serif; }
+        .navbar-brand { font-weight: 700; letter-spacing: .5px; }
+        .hero {
+            background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+            color: white; padding: 80px 0; border-radius: 0 0 24px 24px;
+        }
+        .room-card { transition: transform .2s, box-shadow .2s; border: none; }
+        .room-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,.08); }
+        .room-card .card-img-top {
+            height: 200px; object-fit: cover;
+            background: linear-gradient(45deg, #6c757d, #adb5bd);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 3rem;
+        }
+        .price-tag { color: var(--brand); font-weight: 700; font-size: 1.25rem; }
+        footer { margin-top: 80px; padding: 32px 0; background: #1f2937; color: #cbd5e1; }
+        .badge-status-AVAILABLE { background: #198754; }
+        .badge-status-BOOKED { background: #ffc107; color: #000; }
+        .badge-status-MAINTENANCE { background: #dc3545; }
+    </style>
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/home}">
+            <i class="bi bi-buildings"></i> Moonlit Hotel
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/home}">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/rooms}">Danh sách phòng</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/my-bookings}">Đơn của tôi</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN','STAFF')">
+                    <a class="nav-link text-warning" th:href="@{/dashboard}">
+                        <i class="bi bi-speedometer2"></i> Quản trị
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
+                        <i class="bi bi-person-circle"></i>
+                        <span sec:authentication="name">user</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person"></i> Hồ sơ</a></li>
+                        <li><a class="dropdown-item" th:href="@{/my-bookings}"><i class="bi bi-calendar-check"></i> Đơn của tôi</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li>
+                            <form th:action="@{/auth/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/auth/login}">Đăng nhập</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-primary ms-2" th:href="@{/auth/register}">Đăng ký</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="text-white">Moonlit Hotel</h5>
+                <p class="mb-0">Hệ thống quản lý khách sạn - Spring Boot Demo</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="mb-0">
+                    <i class="bi bi-telephone"></i> 0123 456 789 |
+                    <i class="bi bi-envelope"></i> contact@moonlit.local
+                </p>
+                <small>&copy; 2026 Moonlit Hotel. All rights reserved.</small>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+</body>
+</html>

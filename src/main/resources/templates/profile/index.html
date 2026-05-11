@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{layout/base :: head('Hồ sơ cá nhân')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-person-circle"></i> Hồ sơ cá nhân</h2>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+        <ul class="mb-0">
+            <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="bi bi-person-circle text-primary" style="font-size: 5rem;"></i>
+                    <h4 class="mt-2" th:text="${user.fullName}">Tên</h4>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-at"></i> <span th:text="${user.username}">username</span>
+                    </p>
+                    <span class="badge bg-primary" th:text="${user.role}">CUSTOMER</span>
+                    <hr/>
+                    <p class="mb-1 small">
+                        <i class="bi bi-envelope"></i> <span th:text="${user.email}">email</span>
+                    </p>
+                    <p class="mb-0 small" th:if="${user.phone}">
+                        <i class="bi bi-telephone"></i> <span th:text="${user.phone}">phone</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><b>Thông tin cá nhân</b></div>
+                <div class="card-body">
+                    <form th:action="@{/profile/update}" th:object="${profileRequest}" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Họ tên</label>
+                                <input type="text" th:field="*{fullName}" class="form-control"/>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" th:field="*{email}" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Điện thoại</label>
+                                <input type="text" th:field="*{phone}" class="form-control"/>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày sinh</label>
+                                <input type="date" th:field="*{dateOfBirth}" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ</label>
+                            <input type="text" th:field="*{address}" class="form-control"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Lưu thay đổi
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header"><b>Đổi mật khẩu</b></div>
+                <div class="card-body">
+                    <form th:action="@{/profile/change-password}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu hiện tại</label>
+                            <input type="password" name="oldPassword" class="form-control" required/>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Mật khẩu mới</label>
+                                <input type="password" name="newPassword" class="form-control" required minlength="6"/>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Xác nhận mật khẩu mới</label>
+                                <input type="password" name="confirmPassword" class="form-control" required/>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-key"></i> Đổi mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

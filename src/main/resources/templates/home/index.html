@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{layout/base :: head('Moonlit Hotel - Trang chủ')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="hero">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">Chào mừng đến với Moonlit Hotel</h1>
+        <p class="lead">Trải nghiệm dịch vụ khách sạn 5 sao - Đặt phòng nhanh chóng, dễ dàng</p>
+        <div sec:authorize="isAuthenticated()" class="alert alert-success d-inline-block mt-3">
+            Xin chào <b sec:authentication="name">user</b>! Hãy chọn phòng yêu thích của bạn.
+        </div>
+        <div class="mt-4">
+            <a th:href="@{/rooms}" class="btn btn-light btn-lg me-2">
+                <i class="bi bi-search"></i> Tìm phòng trống
+            </a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/auth/register}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-person-plus"></i> Đăng ký ngay
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Phòng nổi bật</h2>
+
+    <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info text-center">
+        Chưa có phòng nào trong hệ thống.
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="room : ${rooms}">
+            <div class="card room-card h-100 shadow-sm">
+                <div class="card-img-top">
+                    <i class="bi bi-house-door-fill"></i>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="card-title">
+                            Phòng #<span th:text="${room.roomNumber}">101</span>
+                        </h5>
+                        <span class="badge"
+                              th:classappend="'badge-status-' + ${room.status}"
+                              th:text="${room.status}">AVAILABLE</span>
+                    </div>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-tag"></i>
+                        <span th:text="${room.typeName}">Standard</span> -
+                        <i class="bi bi-people"></i>
+                        <span th:text="${room.capacity}">2</span> khách
+                    </p>
+                    <p class="card-text small" th:text="${room.typeDescription}">Mô tả</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">
+                            $<span th:text="${room.pricePerNight}">100</span>/đêm
+                        </span>
+                        <a th:href="@{|/booking/new?roomNumber=${room.roomNumber}|}"
+                           class="btn btn-primary btn-sm"
+                           sec:authorize="isAuthenticated()">
+                            <i class="bi bi-calendar-plus"></i> Đặt ngay
+                        </a>
+                        <a th:href="@{/auth/login}"
+                           class="btn btn-outline-primary btn-sm"
+                           sec:authorize="!isAuthenticated()">
+                            Đăng nhập để đặt
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{layout/base :: head('Danh sách phòng')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container my-5">
+    <h2 class="mb-4">
+        <i class="bi bi-door-open"></i>
+        <span th:if="${filtered}">Phòng trống</span>
+        <span th:unless="${filtered}">Tất cả phòng</span>
+    </h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" th:action="@{/rooms}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Ngày nhận phòng</label>
+                    <input type="date" name="checkin" class="form-control"
+                           th:value="${checkin != null} ? ${#temporals.format(checkin, 'yyyy-MM-dd')} : ''"/>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Ngày trả phòng</label>
+                    <input type="date" name="checkout" class="form-control"
+                           th:value="${checkout != null} ? ${#temporals.format(checkout, 'yyyy-MM-dd')} : ''"/>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Tìm phòng trống
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${filtered}" class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        Hiển thị các phòng còn trống từ
+        <b th:text="${#temporals.format(checkin, 'dd/MM/yyyy')}"></b>
+        đến
+        <b th:text="${#temporals.format(checkout, 'dd/MM/yyyy')}"></b>.
+    </div>
+
+    <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-warning text-center">
+        Không có phòng nào phù hợp.
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="room : ${rooms}">
+            <div class="card room-card h-100 shadow-sm">
+                <div class="card-img-top">
+                    <i class="bi bi-house-door-fill"></i>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">Phòng #<span th:text="${room.roomNumber}">101</span></h5>
+                        <span class="badge"
+                              th:classappend="'badge-status-' + ${room.status}"
+                              th:text="${room.status}">AVAILABLE</span>
+                    </div>
+                    <p class="text-muted">
+                        <i class="bi bi-tag"></i> <span th:text="${room.typeName}">Standard</span>
+                        | <i class="bi bi-people"></i> <span th:text="${room.capacity}">2</span>
+                    </p>
+                    <p class="small" th:text="${room.typeDescription}">Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price-tag">$<span th:text="${room.pricePerNight}">100</span>/đêm</span>
+                        <div>
+                            <a th:href="@{|/rooms/${room.roomNumber}|}" class="btn btn-outline-secondary btn-sm">
+                                Chi tiết
+                            </a>
+                            <a sec:authorize="isAuthenticated()"
+                               th:href="@{/booking/new(roomNumber=${room.roomNumber}, checkin=${checkin}, checkout=${checkout})}"
+                               class="btn btn-primary btn-sm">
+                                <i class="bi bi-calendar-plus"></i> Đặt
+                            </a>
+                            <a sec:authorize="!isAuthenticated()"
+                               th:href="@{/auth/login}"
+                               class="btn btn-outline-primary btn-sm">
+                                Đăng nhập
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>

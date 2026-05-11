@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{layout/base :: head('Lỗi')}"></head>
+<body>
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<div class="container my-5 text-center">
+    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5rem;"></i>
+    <h1 class="display-4" th:text="'Lỗi ' + ${status}">Lỗi</h1>
+    <p class="lead text-muted" th:text="${message} ?: 'Đã xảy ra lỗi không xác định'"></p>
+    <a th:href="@{/home}" class="btn btn-primary mt-3">
+        <i class="bi bi-house"></i> Về trang chủ
+    </a>
+</div>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<th:block th:replace="~{layout/base :: scripts}"></th:block>
+</body>
+</html>
